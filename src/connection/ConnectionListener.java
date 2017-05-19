@@ -8,13 +8,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConnectionListener extends Thread {
 
 	private int port;
+	private List<Socket> establishedSockets;
 
 	public ConnectionListener(int port) {
 		this.port = port;
+		this.establishedSockets = new ArrayList<>();
 	}
 
 	@Override
@@ -27,13 +31,14 @@ public class ConnectionListener extends Thread {
 			try {
 				while (true) {
 					Socket socket = listener.accept();
+					establishedSockets.add(socket);
 					LocalDateTime userLoginTime = LocalDateTime.now();
-					
+
 					try {
 						BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 						String username = input.readLine();
 						System.out.println("LOGGED: " + username);
-						
+
 						PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 						out.println(userLoginTime.format(dateFormat));
 					} finally {
@@ -48,7 +53,5 @@ public class ConnectionListener extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
-	
 
 }
