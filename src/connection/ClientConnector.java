@@ -7,9 +7,14 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ClientConnector {
-	
-	public static Socket getInstance(String username) {
-		Socket socket;
+
+	private Socket socket;
+
+	public ClientConnector(String username) {
+		loginToServer(username);
+	}
+
+	public void loginToServer(String username) {
 		try {
 			socket = new Socket("localhost", 6066);
 
@@ -21,13 +26,17 @@ public class ClientConnector {
 			String answer = input.readLine();
 
 			System.out.println(answer);
-			
-			return socket;
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
 	}
+	
+	public Socket getSocket() {
+		return socket;
+	}
+	
+	
 
 }
