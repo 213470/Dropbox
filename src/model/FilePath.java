@@ -9,6 +9,12 @@ public class FilePath {
 	private String username;
 	private int fileNo;
 	private List<File> fileList;
+	
+	public FilePath() {
+		this.username = "";
+		this.fileNo = 0;
+		this.fileList = new LinkedList<>();
+	}
 
 	public FilePath(String username) {
 		this.username = username;
@@ -18,9 +24,14 @@ public class FilePath {
 
 	public FilePath(String username, List<File> fileList) {
 		this.username = username;
-		this.fileList = fileList;
 		this.fileNo = fileList.size();
+		this.fileList = fileList;
+	}
 
+	public FilePath(String username, int fileNo, List<File> fileList) {
+		this.username = username;
+		this.fileNo = fileNo;
+		this.fileList = fileList;
 	}
 
 	public String getUsername() {

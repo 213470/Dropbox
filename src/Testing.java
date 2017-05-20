@@ -6,7 +6,8 @@ public class Testing {
 
 		Crawler crawler = new Crawler(args[1]);
 		crawler.mapDirectoriesToList();
-		crawler.prepareJSON("mats");
+//		crawler.prepareJSON("mats");
+		crawler.checkForDifference();
 	
 		
 //		try {

@@ -8,19 +8,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConnectionListener extends Thread {
 
 	private int port;
-	private List<Socket> establishedSockets;
+	private Map<String, Socket> establishedSockets;
 
 	public ConnectionListener(int port) {
 		this.port = port;
-		this.establishedSockets = new ArrayList<>();
+		this.establishedSockets = new HashMap<>();
 	}
-	
 
 	@Override
 	public void run() {
@@ -32,27 +31,39 @@ public class ConnectionListener extends Thread {
 			try {
 				while (true) {
 					Socket socket = listener.accept();
-					establishedSockets.add(socket);
+
 					LocalDateTime userLoginTime = LocalDateTime.now();
 
-					try {
-						BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-						String username = input.readLine();
-						System.out.println("LOGGED: " + username);
+					BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					String username = input.readLine();
+					System.out.println("LOGGED: " + username);
+					establishedSockets.put(username, socket);
+					PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+					out.println(userLoginTime.format(dateFormat));
 
-						PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-						out.println(userLoginTime.format(dateFormat));
-					} finally {
-						socket.close();
-					}
 				}
 			} finally {
+				for(Socket s : establishedSockets.values()) {
+					s.close();
+				}
 				listener.close();
 			}
 		} catch (IOException e) {
 			System.out.println();
 			e.printStackTrace();
 		}
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public Map<String, Socket> getEstablishedSockets() {
+		return establishedSockets;
+	}
+	
+	public Socket getUserSocket(String username) {
+		return establishedSockets.get(username);
 	}
 
 }
