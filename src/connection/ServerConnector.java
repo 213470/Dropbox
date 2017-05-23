@@ -39,15 +39,19 @@ public class ServerConnector extends Thread {
 					System.out.println("LOGGED: " + username);
 					PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 					out.println(userLoginTime.format(dateFormat));
-
-					FileSender fs = new FileSender(socket, pathToFiles);
-
-					List<File> filesToDownload = fs.receiveFileList();
-					System.out.println(filesToDownload);
-
-					for (File fileToDownload : filesToDownload) {
-						fs.fileReceive(fileToDownload);
-					}
+					Downloader dl = new Downloader(listener);
+					dl.doConnect();
+					dl.downloadFile();
+//					System.out.println("==");
+//					FileSender fs = new FileSender(socket, pathToFiles);
+//					System.out.println("==");
+//					List<File> filesToDownload = fs.receiveFileList();
+//					System.out.println(filesToDownload);
+//
+//					for (File fileToDownload : filesToDownload) {
+//						long fileSize = fs.receiveFileSize(fileToDownload);
+//						fs.fileReceive(fileToDownload);
+//					}
 					socket.close();
 				}
 			} finally {
