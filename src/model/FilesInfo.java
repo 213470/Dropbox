@@ -4,31 +4,31 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FilePath {
+public class FilesInfo {
 
 	private String username;
 	private int fileNo;
 	private List<File> fileList;
 	
-	public FilePath() {
+	public FilesInfo() {
 		this.username = "";
 		this.fileNo = 0;
 		this.fileList = new LinkedList<>();
 	}
 
-	public FilePath(String username) {
+	public FilesInfo(String username) {
 		this.username = username;
 		this.fileNo = 0;
 		this.fileList = new LinkedList<>();
 	}
 
-	public FilePath(String username, List<File> fileList) {
+	public FilesInfo(String username, List<File> fileList) {
 		this.username = username;
 		this.fileNo = fileList.size();
 		this.fileList = fileList;
 	}
 
-	public FilePath(String username, int fileNo, List<File> fileList) {
+	public FilesInfo(String username, int fileNo, List<File> fileList) {
 		this.username = username;
 		this.fileNo = fileNo;
 		this.fileList = fileList;
@@ -60,7 +60,7 @@ public class FilePath {
 
 	@Override
 	public boolean equals(Object obj) {
-		return this.username.equals(((FilePath) obj).getUsername()) && this.fileNo == ((FilePath) obj).getFileNo();
+		return this.username.equals(((FilesInfo) obj).getUsername()) && this.fileNo == ((FilesInfo) obj).getFileNo();
 	}
 
 }

@@ -3,9 +3,7 @@ package utility;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,7 +12,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import model.FilePath;
+import model.FilesInfo;
 
 public class Crawler {
 
@@ -64,12 +62,11 @@ public class Crawler {
 	}
 
 	/*
-	
-	
+		Creates JSON file mapped 
 	*/
 	public void prepareJSON(String username) {
 		File home = new File(homeDir + "/files.json");
-		FilePath fp = new FilePath(username, fileList);
+		FilesInfo fp = new FilesInfo(username, fileList);
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			mapper.writeValue(home, fp);
@@ -91,7 +88,7 @@ public class Crawler {
 		retainedFiles.addAll(fileList);
 		differenceList.addAll(fileList);
 		try {
-			FilePath savedContent = mapper.readValue(new File(homeDir + JSON_FILENAME), FilePath.class);
+			FilesInfo savedContent = mapper.readValue(new File(homeDir + JSON_FILENAME), FilesInfo.class);
 			retainedFiles.retainAll(savedContent.getFileList());
 			differenceList.removeAll(retainedFiles);
 			System.out.println(differenceList.toString());
@@ -105,8 +102,15 @@ public class Crawler {
 			System.out.println(e.getClass());
 			e.printStackTrace();
 		}
-
+		
+		if(!fileList.isEmpty() && differenceList.isEmpty()) {
+			return true;
+		}
 		return false;
+	}
+	
+	public List<File> getDifferenceList() {
+		return differenceList;
 	}
 
 }

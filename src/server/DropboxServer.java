@@ -1,6 +1,6 @@
 package server;
 
-import connection.ConnectionListener;
+import connection.ServerConnector;
 
 public class DropboxServer {
 	
@@ -10,15 +10,9 @@ public class DropboxServer {
 		
 		new Instanciation(args[0]);
 		
-		ConnectionListener connection = new ConnectionListener(PORT_NUMBER);
+		ServerConnector connection = new ServerConnector(PORT_NUMBER, args[0]);
 		// Listening for client connected
 		connection.start();
-		
-		
-		
-		
-		
-		
 	}
 
 }

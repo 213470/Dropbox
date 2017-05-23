@@ -1,6 +1,7 @@
 package connection;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -8,17 +9,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-public class ConnectionListener extends Thread {
+public class ServerConnector extends Thread {
 
 	private int port;
-	private Map<String, Socket> establishedSockets;
+	private String pathToFiles;
 
-	public ConnectionListener(int port) {
+	public ServerConnector(int port, String pathToFiles) {
 		this.port = port;
-		this.establishedSockets = new HashMap<>();
+		this.pathToFiles = pathToFiles;
 	}
 
 	@Override
@@ -37,15 +37,20 @@ public class ConnectionListener extends Thread {
 					BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					String username = input.readLine();
 					System.out.println("LOGGED: " + username);
-					establishedSockets.put(username, socket);
 					PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 					out.println(userLoginTime.format(dateFormat));
 
+					FileSender fs = new FileSender(socket, pathToFiles);
+
+					List<File> filesToDownload = fs.receiveFileList();
+					System.out.println(filesToDownload);
+
+					for (File fileToDownload : filesToDownload) {
+						fs.fileReceive(fileToDownload);
+					}
+					socket.close();
 				}
 			} finally {
-				for(Socket s : establishedSockets.values()) {
-					s.close();
-				}
 				listener.close();
 			}
 		} catch (IOException e) {
@@ -56,14 +61,6 @@ public class ConnectionListener extends Thread {
 
 	public int getPort() {
 		return port;
-	}
-
-	public Map<String, Socket> getEstablishedSockets() {
-		return establishedSockets;
-	}
-	
-	public Socket getUserSocket(String username) {
-		return establishedSockets.get(username);
 	}
 
 }
