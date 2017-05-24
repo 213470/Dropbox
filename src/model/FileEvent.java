@@ -64,10 +64,15 @@ public class FileEvent implements Serializable {
 		this.fileData = fileData;
 	}
 
+	public String print() {
+		// TODO Auto-generated method stub
+		return destinationDirectory + "\n" + sourceDirectory + "\n" + filename + "\n" + fileSize + "\n" + fileData
+				+ "\n" + status + "\n";
+	}
+
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return destinationDirectory + "\n" + sourceDirectory + "\n" + filename + "\n"
-				+ fileSize + "\n" + fileData + "\n" + status + "\n";
+		return filename;
 	}
 }

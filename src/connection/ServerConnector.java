@@ -1,7 +1,6 @@
 package connection;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -9,16 +8,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+
+import utility.Dispatcher;
 
 public class ServerConnector extends Thread {
 
 	private int port;
-	private String pathToFiles;
+	private Dispatcher dispatcher;
 
-	public ServerConnector(int port, String pathToFiles) {
+	public ServerConnector(int port, Dispatcher dispatcher) {
 		this.port = port;
-		this.pathToFiles = pathToFiles;
+		this.dispatcher = dispatcher;
 	}
 
 	@Override
@@ -39,19 +39,19 @@ public class ServerConnector extends Thread {
 					System.out.println("LOGGED: " + username);
 					PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 					out.println(userLoginTime.format(dateFormat));
-					Downloader dl = new Downloader(listener);
+					Downloader dl = new Downloader(listener, dispatcher);
 					dl.doConnect();
 					dl.downloadFile();
-//					System.out.println("==");
-//					FileSender fs = new FileSender(socket, pathToFiles);
-//					System.out.println("==");
-//					List<File> filesToDownload = fs.receiveFileList();
-//					System.out.println(filesToDownload);
-//
-//					for (File fileToDownload : filesToDownload) {
-//						long fileSize = fs.receiveFileSize(fileToDownload);
-//						fs.fileReceive(fileToDownload);
-//					}
+					// System.out.println("==");
+					// FileSender fs = new FileSender(socket, pathToFiles);
+					// System.out.println("==");
+					// List<File> filesToDownload = fs.receiveFileList();
+					// System.out.println(filesToDownload);
+					//
+					// for (File fileToDownload : filesToDownload) {
+					// long fileSize = fs.receiveFileSize(fileToDownload);
+					// fs.fileReceive(fileToDownload);
+					// }
 					socket.close();
 				}
 			} finally {

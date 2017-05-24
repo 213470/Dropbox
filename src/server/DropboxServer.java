@@ -1,6 +1,7 @@
 package server;
 
 import connection.ServerConnector;
+import utility.Dispatcher;
 
 public class DropboxServer {
 	
@@ -10,7 +11,7 @@ public class DropboxServer {
 		
 		new Instanciation(args[0]);
 		
-		ServerConnector connection = new ServerConnector(PORT_NUMBER, args[0]);
+		ServerConnector connection = new ServerConnector(PORT_NUMBER, new Dispatcher(args[0]));
 		// Listening for client connected
 		connection.start();
 	}
