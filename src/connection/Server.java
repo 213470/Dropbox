@@ -3,17 +3,24 @@ package connection;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import model.FileEvent;
 
 public class Server extends Thread {
 
 	private int port;
 	private Socket socket;
 	private String serverPath;
+	private Queue<FileEvent> queue;
 
 	public Server(int port, String serverPath) {
 		this.port = port;
 		this.serverPath = serverPath;
 		this.socket = null;
+		this.queue = Collections.asLifoQueue(new LinkedList<FileEvent>());
 	}
 
 	@Override
@@ -27,27 +34,9 @@ public class Server extends Thread {
 				while (true) {
 					socket = listener.accept();
 
-					Handshake hs = new Handshake(socket, serverPath);
+					Handshake hs = new Handshake(socket, serverPath, queue);
 					hs.start();
 
-					// BufferedReader input = new BufferedReader(new
-					// InputStreamReader(socket.getInputStream()));
-					// String username = input.readLine();
-					// System.out.println("LOGGED: " + username);
-					// PrintWriter out = new
-					// PrintWriter(socket.getOutputStream(), true);
-					// out.println(userLoginTime.format(dateFormat));
-
-					// System.out.println("==");
-					// FileSender fs = new FileSender(socket, pathToFiles);
-					// System.out.println("==");
-					// List<File> filesToDownload = fs.receiveFileList();
-					// System.out.println(filesToDownload);
-					//
-					// for (File fileToDownload : filesToDownload) {
-					// long fileSize = fs.receiveFileSize(fileToDownload);
-					// fs.fileReceive(fileToDownload);
-					// }
 				}
 			} finally {
 				socket.close();

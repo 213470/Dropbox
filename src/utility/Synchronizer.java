@@ -26,10 +26,10 @@ public class Synchronizer extends Thread {
 				ul.connect();
 				ul.sendFiles();
 
-				crawler.updateJSON(userInfo.getUsername());
+//				crawler.updateJSON(userInfo.getUsername());
 			}
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(60000);
 			} catch (InterruptedException e) {
 
 				e.printStackTrace();

@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Queue;
 
 import utility.Dispatcher;
 
@@ -15,10 +16,12 @@ public class Handshake extends Thread {
 
 	private Socket socket;
 	private String serverPath;
+	private Queue queue;
 
-	public Handshake(Socket socket, String serverPath) {
+	public Handshake(Socket socket, String serverPath, Queue queue) {
 		this.socket = socket;
 		this.serverPath = serverPath;
+		this.queue = queue;
 	}
 
 	public void run() {
@@ -36,8 +39,9 @@ public class Handshake extends Thread {
 
 			dispatcher.setServerPath(dispatcher.getServerPath() + File.separator + username);
 
-			Downloader dl = new Downloader(dispatcher);
+			Downloader dl = new Downloader(dispatcher, queue);
 			dl.doConnect();
+			dl.enqueue();
 			dl.downloadFiles();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

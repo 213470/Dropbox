@@ -10,8 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import model.FileEvent;
+import utility.Transfer;
 
-public class Uploader {
+public class Uploader extends Transfer{
 	private Socket socket = null;
 	private ObjectOutputStream outputStream = null;
 	private boolean isConnected = false;
@@ -26,7 +27,8 @@ public class Uploader {
 	public void connect() {
 		while (!isConnected) {
 			try {
-				socket = new Socket("localHost", 6067);
+				socket = new Socket("localHost", incrementPort());
+				System.out.println("Established socket connection on: " + getPORT());
 				outputStream = new ObjectOutputStream(socket.getOutputStream());
 				isConnected = true;
 			} catch (IOException e) {
