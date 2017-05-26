@@ -16,14 +16,13 @@ public class Downloader {
 	private ServerSocket serverSocket = null;
 	private Socket socket = null;
 	private ObjectInputStream inputStream = null;
-	private FileEvent fileEvent;
+	private FileEvent fileEvent = null;
 	private File dstFile = null;
 	private FileOutputStream fileOutputStream = null;
 	private List<FileEvent> fileEvents = null;
 	private Dispatcher dispatcher = null;
 
-	public Downloader(ServerSocket serverSocket, Dispatcher dispatcher) {
-		this.serverSocket = serverSocket;
+	public Downloader(Dispatcher dispatcher) {
 		this.dispatcher = dispatcher;
 	}
 
@@ -37,7 +36,7 @@ public class Downloader {
 		}
 	}
 
-	public void downloadFile() {
+	public void downloadFiles() {
 		try {
 			fileEvents = (List<FileEvent>) inputStream.readObject();
 			// fileEvent = inputStream.readObject();
@@ -48,7 +47,11 @@ public class Downloader {
 				}
 				String outputFile = dispatcher.getServerPath() + File.separator + fe.getFilename();
 				dstFile = new File(outputFile);
-				System.out.println(dstFile);
+				File f = new File(dispatcher.getServerPath() + File.separator);
+				if (!f.exists()) {
+					f.mkdir();
+					System.out.println("Path created.");
+				}
 				fileOutputStream = new FileOutputStream(dstFile);
 				fileOutputStream.write(fe.getFileData());
 				fileOutputStream.flush();
@@ -63,16 +66,16 @@ public class Downloader {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				if (socket == null) {
-					serverSocket.close();
-				} else {
-					socket.close();
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+//				if (socket == null) {
+//					serverSocket.close();
+//				} else {
+//					socket.close();
+//				}
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 	}
 }

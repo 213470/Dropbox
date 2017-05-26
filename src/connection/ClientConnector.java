@@ -20,7 +20,7 @@ public class ClientConnector {
 
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			out.println(username);
-
+			Thread.sleep(1000);
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			System.out.print("You have connected to server at: ");
 			String answer = input.readLine();
@@ -28,6 +28,9 @@ public class ClientConnector {
 			System.out.println(answer);
 
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

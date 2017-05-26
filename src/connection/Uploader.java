@@ -38,7 +38,7 @@ public class Uploader {
 	/**
 	 * Sending FileEvent object.
 	 */
-	public void sendFile() {
+	public void sendFiles() {
 		try {
 			for (File f : transferFiles) {
 				fileEvent = new FileEvent();

@@ -19,6 +19,10 @@ public class Crawler {
 	public static String JSON_FILENAME = "files.json";
 
 	private String homeDir;
+	public String getHomeDir() {
+		return homeDir;
+	}
+
 	private List<File> fileList;
 	private List<File> differenceList;
 
@@ -26,16 +30,17 @@ public class Crawler {
 		this.homeDir = homeDir.endsWith(File.separator) ? homeDir : homeDir + File.separator;
 		this.fileList = new LinkedList<File>();
 		this.differenceList = new LinkedList<File>();
+		new File(homeDir + File.separator + JSON_FILENAME);
 	}
 
-	public void mapDirectoriesToList() {
+	public void scanFiles() {
+		fileList.clear();
 		walk(homeDir);
 	}
 
 	private void walk(String path) {
 		File root = new File(path);
 		File[] list = root.listFiles();
-
 		if (list == null)
 			return;
 
@@ -51,20 +56,20 @@ public class Crawler {
 			if (!f.isDirectory()) {
 				if (!f.getPath().endsWith("files.json")) {
 					fileList.add(f);
-					System.out.println(f.getPath());
+					 System.out.println(f.getPath());
 				}
 			} else {
 				walk(f.getPath());
 			}
 
 		}
-		
+
 	}
 
 	/*
-		Creates JSON file mapped 
-	*/
-	public void prepareJSON(String username) {
+	 * Creates JSON file mapped
+	 */
+	public void updateJSON(String username) {
 		File home = new File(homeDir + "/files.json");
 		FilesInfo fp = new FilesInfo(username, fileList);
 		ObjectMapper mapper = new ObjectMapper();
@@ -86,12 +91,16 @@ public class Crawler {
 		ObjectMapper mapper = new ObjectMapper();
 		List<File> retainedFiles = new LinkedList<>();
 		retainedFiles.addAll(fileList);
+		differenceList.clear();
 		differenceList.addAll(fileList);
 		try {
 			FilesInfo savedContent = mapper.readValue(new File(homeDir + JSON_FILENAME), FilesInfo.class);
 			retainedFiles.retainAll(savedContent.getFileList());
 			differenceList.removeAll(retainedFiles);
-			System.out.println(differenceList.toString());
+//			if (savedContent.getFileList().retainAll(fileList)) {
+//				updateJSON(savedContent.getUsername());
+//				System.out.println("JSON updated");
+//			}
 		} catch (JsonParseException e) {
 			System.out.println(e.getClass());
 			e.printStackTrace();
@@ -102,13 +111,13 @@ public class Crawler {
 			System.out.println(e.getClass());
 			e.printStackTrace();
 		}
-		
-		if(!fileList.isEmpty() && differenceList.isEmpty()) {
+
+		if (!fileList.isEmpty() && !differenceList.isEmpty()) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public List<File> getDifferenceList() {
 		return differenceList;
 	}

@@ -24,7 +24,7 @@ public class Server {
 	 */
 	public void doConnect() {
 		try {
-			serverSocket = new ServerSocket(4445);
+			serverSocket = new ServerSocket(6067);
 			socket = serverSocket.accept();
 			inputStream = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e) {
